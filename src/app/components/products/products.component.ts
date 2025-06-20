@@ -1,54 +1,66 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ProductService } from './product.service';
-import { NgClass, NgFor } from '@angular/common';
+import { AsyncPipe, NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { ButtonModule } from 'primeng/button';
+import { ToolbarModule } from 'primeng/toolbar';
+import { AvatarModule } from 'primeng/avatar';
 
 @Component({
   selector: 'app-products',
-  imports: [NgFor, NgClass, FormsModule],
+  imports: [
+    NgFor,
+    FormsModule,
+    RouterLink,
+    AsyncPipe,
+    ButtonModule,
+    ToolbarModule,
+    AvatarModule
+  ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
 })
 export class ProductsComponent implements OnInit {
-  products: any[] = [];
+  showEditModal: boolean = false;
   viewModal: boolean = false;
-  newProduct = {
-    category: '',
-    description: '',
-    img: '',
-    price: 0,
-    title: '',
-  };
+  editableProduct: any = {};
+  private productservice: ProductService = inject(ProductService);
 
-  constructor(private productservice: ProductService) {}
+  products$ = this.productservice.products$;
+  items: any;
 
   ngOnInit() {
-    this.productservice.getAllProducts().subscribe((data) => {
-      this.products = data;
-    });
-  }
-
-  onSubmit() {
-    this.productservice.addProducts(this.newProduct).subscribe({
-      next: (res) => {
-        console.log('succes');
-        this.products.push(res);
-        this.viewModal = false;
-        this.newProduct = {
-          category: '',
-          description: '',
-          img: '',
-          price: 0,
-          title: '',
-        };
-      },
-      error: () => {
-        console.log('Error');
-      },
-    });
+    this.productservice.getAllProducts();
   }
 
   onView() {
     this.viewModal = !this.viewModal;
+  }
+
+  onShowModal() {
+    this.showEditModal = !this.showEditModal;
+  }
+
+  openEditModal(product: any) {
+    console.log('Tahrirlanayotgan mahsulot:', product);
+    this.editableProduct = { ...product };
+    this.showEditModal = !this.showEditModal;
+  }
+
+  saveChanges() {
+    console.log('Yuborilayotgan mahsulot:', this.editableProduct);
+    this.productservice
+      .updateproduct(this.editableProduct.id, this.editableProduct)
+      .subscribe((updated) => {
+        this.showEditModal = !this.showEditModal;
+        this.productservice.updateLocalProduct(updated);
+      });
+  }
+
+  onDelete(productId: number) {
+    this.productservice.deleteProduct(productId).subscribe(() => {
+      this.productservice.removeProductFromList(productId);
+    });
   }
 }

@@ -1,37 +1,130 @@
-<div class="relative">
-  <div class="text-center">
-    <button class="bg-cyan-400 p-3 cursor-pointer rounded" [disabled]="viewModal" (click)="onView()">+Add Product</button>
-  </div>
-  <div class="absolute top-52 left-96 w-2xl h-80 bg-amber-600 text-center p-5" [ngClass]="viewModal ? 'block' : 'hidden'">
-    <form (ngSubmit)="onSubmit()" #productForm="ngForm" >
-        <div class="mb-2">
-            <input type="text" placeholder="category" class="bg-amber-50" required name="category" [(ngModel)]="newProduct.category">
+<p-toolbar [style]="{ 'border-radius': '3rem', 'padding': '1rem 1rem 1rem 1.5rem' }">
+    <ng-template #start>
+        <div class="flex items-center gap-2">
+            <svg width="31" height="33" viewBox="0 0 31 33" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 2rem; margin-right: 1rem">
+                <path d="..." fill="var(--p-primary-color)" />
+                <mask id="mask0_1_52" style="mask-type:luminance" maskUnits="userSpaceOnUse" x="0" y="0" width="31" height="33"/>
+            </svg>
+            <p-button label="Files" text plain />
+            <p-button label="Edit" text plain />
+            <p-button label="View" text plain />
+            <i></i>
         </div>
-        <div class="mb-2">
-            <input type="text" placeholder="description" class="bg-amber-50" required name="description" [(ngModel)]="newProduct.description">
-        </div>
-       <div class="mb-2">
-         <input type="text" placeholder="img url" class="bg-amber-50" required name="img" [(ngModel)]="newProduct.img">
-       </div>
-       <div class="mb-2">
-         <input type="number" placeholder="price" class="bg-amber-50" required name="price" [(ngModel)]="newProduct.price">
-       </div>
-        <div class="mb-2">
-            <input type="text" placeholder="title" class="bg-amber-50" required name="title" [(ngModel)]="newProduct.title">
-        </div>
+    </ng-template>
 
-        <button class="bg-amber-50 p-3 cursor-pointer">Add</button>
-    </form>
+    <ng-template #end>
+        <div class="flex items-center gap-2">
+            <p-avatar image="https://primefaces.org/cdn/primeng/images/demo/avatar/amyelsner.png" [style]="{ width: '32px', height: '32px' }" />
+        </div>
+    </ng-template>
+</p-toolbar>
+
+<div class="p-7 container-2xl">
+  <div class="text-right">
+    <p-button label="Add Product" routerLink="/addproduct" />
   </div>
+
+  @let products = products$ | async; @if(products) {
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div *ngFor="let product of products" class="p-4 rounded shadow-2xl">
+    <div
+      *ngFor="let product of products"
+      class="p-4 rounded shadow-2xl relative"
+    >
+      <p-button
+        label="Edit"
+        severity="success"
+        (onClick)="openEditModal(product)"
+      />
+      <p-button label="Delete" severity="danger" class="ml-2" (onClick)="onDelete(product.id)"/>
       <img [src]="product.image" class="w-full h-40 object-contain" />
       <h3 class="text-lg font-bold mt-2">{{ product.title }}</h3>
-      <p class="text-sm">{{ product.description }}</p>
+      <p class="text-sm line-clamp-2">{{ product.description }}</p>
       <p class="font-semibold">Category: {{ product.category }}</p>
       <p class="text-green-600 font-semibold">${{ product.price }}</p>
-      <p>Rating: {{product.rating.rate}}</p>
-      <p>Count: {{product.rating.count}}</p>
+      <p>Rating: {{ product.rating.rate }}</p>
+      <p>Count: {{ product.rating.count }}</p>
     </div>
   </div>
+  } @else {
+  <p>Yuklanyapti</p>
+  }
+  
+  @if(showEditModal){
+  <div
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+  >
+    <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6 relative">
+      <button
+        class="absolute top-2 right-3 text-gray-500 hover:text-black text-2xl cursor-pointer"
+        (click)="onShowModal()"
+      >
+        &times;
+      </button>
+
+      <h2 class="text-xl font-bold mb-4">Mahsulotni tahrirlash</h2>
+      <form (ngSubmit)="saveChanges()">
+        <div class="mb-3">
+          <label class="block text-sm font-semibold">Title</label>
+          <input
+            type="text"
+            name="title"
+            class="w-full p-2 border rounded"
+            required
+            [(ngModel)]="editableProduct.title"
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="block text-sm font-semibold">Price</label>
+          <input
+            type="number"
+            name="price"
+            class="w-full p-2 border rounded"
+            [(ngModel)]="editableProduct.price"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="block text-sm font-semibold">Description</label>
+          <textarea
+            name="description"
+            class="w-full p-2 border rounded"
+            rows="3"
+            [(ngModel)]="editableProduct.description"
+            required
+          ></textarea>
+        </div>
+
+        <div class="mb-3">
+          <label class="block text-sm font-semibold">Category</label>
+          <input
+            type="text"
+            name="category"
+            [(ngModel)]="editableProduct.category"
+            class="w-full p-2 border rounded"
+            required
+          />
+        </div>
+
+        <div class="mb-3">
+          <label class="block text-sm font-semibold">Image URL</label>
+          <input
+            type="text"
+            name="image"
+            class="w-full p-2 border rounded"
+            [(ngModel)]="editableProduct.image"
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 mt-2 cursor-pointer"
+        >
+          Saqlash
+        </button>
+      </form>
+    </div>
+  </div>
+  }
 </div>

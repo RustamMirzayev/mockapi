@@ -1,0 +1,57 @@
+<div class="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+  <div class="w-[95%] sm:w-[80%] md:w-[600px] bg-amber-600 rounded-lg shadow-lg p-6">
+    <form (ngSubmit)="onSubmit()" #productForm="ngForm" class="space-y-4">
+      <input
+        type="text"
+        placeholder="Category"
+        class="bg-amber-50 w-full px-4 py-2 rounded outline-none"
+        required
+        name="category"
+        [(ngModel)]="newProduct.category"
+      />
+
+      <input
+        type="text"
+        placeholder="Description"
+        class="bg-amber-50 w-full px-4 py-2 rounded outline-none"
+        required
+        name="description"
+        [(ngModel)]="newProduct.description"
+      />
+
+      <input
+        type="text"
+        placeholder="Image URL"
+        class="bg-amber-50 w-full px-4 py-2 rounded outline-none"
+        required
+        name="img"
+        [(ngModel)]="newProduct.img"
+      />
+
+      <input
+        type="number"
+        placeholder="Price"
+        class="bg-amber-50 w-full px-4 py-2 rounded outline-none"
+        required
+        name="price"
+        [(ngModel)]="newProduct.price"
+      />
+
+      <input
+        type="text"
+        placeholder="Title"
+        class="bg-amber-50 w-full px-4 py-2 rounded outline-none"
+        required
+        name="title"
+        [(ngModel)]="newProduct.title"
+      />
+
+      <button
+        class="w-full bg-white hover:bg-amber-100 text-black font-semibold py-2 rounded transition cursor-pointer"
+        redirectTo="/"
+      >
+        Add
+      </button>
+    </form>
+  </div>
+</div>
