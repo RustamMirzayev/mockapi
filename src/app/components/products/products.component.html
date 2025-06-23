@@ -26,8 +26,8 @@
 
   @let products = products$ | async; @if(products) {
   <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-    <div
-      *ngFor="let product of products"
+    @for (product of products; track $index) {
+      <div
       class="p-4 rounded shadow-2xl relative"
     >
       <p-button
@@ -41,9 +41,11 @@
       <p class="text-sm line-clamp-2">{{ product.description }}</p>
       <p class="font-semibold">Category: {{ product.category }}</p>
       <p class="text-green-600 font-semibold">${{ product.price }}</p>
-      <p>Rating: {{ product.rating.rate }}</p>
-      <p>Count: {{ product.rating.count }}</p>
+      <p>Rating: {{ product.rating?.rate }}</p>
+      <p>Count: {{ product.rating?.count }}</p>
     </div>
+    }
+    
   </div>
   } @else {
   <p>Yuklanyapti</p>

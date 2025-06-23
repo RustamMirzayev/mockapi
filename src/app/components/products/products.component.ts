@@ -43,13 +43,11 @@ export class ProductsComponent implements OnInit {
   }
 
   openEditModal(product: any) {
-    console.log('Tahrirlanayotgan mahsulot:', product);
     this.editableProduct = { ...product };
     this.showEditModal = !this.showEditModal;
   }
 
   saveChanges() {
-    console.log('Yuborilayotgan mahsulot:', this.editableProduct);
     this.productservice
       .updateproduct(this.editableProduct.id, this.editableProduct)
       .subscribe((updated) => {
