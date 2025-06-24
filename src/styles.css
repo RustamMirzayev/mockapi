@@ -2,5 +2,5 @@
 
 
 .container-2xl {
-    @apply mx-auto max-w-[1440px] px-4;
+    @apply mx-auto max-w-[1440px] px-14;
 }

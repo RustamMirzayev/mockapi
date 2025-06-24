@@ -1,54 +1,71 @@
-<div class="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
-  <div class="w-[95%] sm:w-[80%] md:w-[600px] bg-amber-600 rounded-lg shadow-lg p-6">
-    <form (ngSubmit)="onSubmit()" #productForm="ngForm" class="space-y-4">
-      <input
-        type="text"
-        placeholder="Category"
-        class="bg-amber-50 w-full px-4 py-2 rounded outline-none"
-        required
-        name="category"
-        [(ngModel)]="newProduct.category"
-      />
+<div class="fixed inset-0 flex items-center justify-center">
+  <div class="w-[95%] sm:w-[80%] md:w-[600px] rounded-lg shadow-lg p-6">
+    <form (ngSubmit)="onSubmit()" #productForm="ngForm" class="space-y-4 flex flex-col gap-5">
+      <p-floatlabel>
+        <input
+          pInputText
+          id="category"
+          name="category"
+          [(ngModel)]="newProduct.category"
+          required
+          class="bg-amber-50 w-full px-4 py-2 rounded outline-none"
+        />
+        <label for="category" class="text-black">Product Category</label>
+      </p-floatlabel>
 
-      <input
-        type="text"
-        placeholder="Description"
-        class="bg-amber-50 w-full px-4 py-2 rounded outline-none"
-        required
-        name="description"
-        [(ngModel)]="newProduct.description"
-      />
+      <p-floatlabel>
+        <input
+          pInputText
+          id="description"
+          name="description"
+          [(ngModel)]="newProduct.description"
+          required
+          class="bg-amber-50 w-full px-4 py-2 rounded outline-none"
+        />
+        <label for="description" class="text-black">Description</label>
+      </p-floatlabel>
 
-      <input
-        type="text"
-        placeholder="Image URL"
-        class="bg-amber-50 w-full px-4 py-2 rounded outline-none"
-        required
-        name="img"
-        [(ngModel)]="newProduct.img"
-      />
+      <p-floatlabel>
+        <input
+          pInputText
+          id="img"
+          name="img"
+          [(ngModel)]="newProduct.img"
+          required
+          class="bg-amber-50 w-full px-4 py-2 rounded outline-none"
+        />
+        <label for="img" class="text-black">Image URL</label>
+      </p-floatlabel>
 
-      <input
-        type="number"
-        placeholder="Price"
-        class="bg-amber-50 w-full px-4 py-2 rounded outline-none"
-        required
-        name="price"
-        [(ngModel)]="newProduct.price"
-      />
+      <p-floatlabel>
+        <p-inputnumber
+          inputId="price"
+          name="price"
+          [(ngModel)]="newProduct.price"
+          mode="decimal"
+          class="w-full"
+          [minFractionDigits]="0"
+          [maxFractionDigits]="2"
+          [ngModelOptions]="{ standalone: true }"
+        />
+        <label for="price" class="text-black">Price</label>
+      </p-floatlabel>
 
-      <input
-        type="text"
-        placeholder="Title"
-        class="bg-amber-50 w-full px-4 py-2 rounded outline-none"
-        required
-        name="title"
-        [(ngModel)]="newProduct.title"
-      />
+      <p-floatlabel>
+        <input
+          pInputText
+          id="title"
+          name="title"
+          [(ngModel)]="newProduct.title"
+          required
+          class="bg-amber-50 w-full px-4 py-2 rounded outline-none"
+        />
+        <label for="title" class="text-black">Title</label>
+      </p-floatlabel>
 
       <button
-        class="w-full bg-white hover:bg-amber-100 text-black font-semibold py-2 rounded transition cursor-pointer"
         redirectTo="/"
+        class="w-full bg-slate-700 hover:bg-slate-800 text-white font-semibold py-2 rounded transition cursor-pointer"
       >
         Add
       </button>

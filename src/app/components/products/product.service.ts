@@ -3,21 +3,25 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { environment } from '../../../environments/environment';
 
-
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
-  private baseUrl = environment.baseUrl
+  private baseUrl = environment.baseUrl;
 
   private productsSubject = new BehaviorSubject<any[]>([]);
   public products$ = this.productsSubject.asObservable();
 
+  private _loading = new BehaviorSubject<boolean>(true);
+  public loading$ = this._loading.asObservable();
+
   constructor(private http: HttpClient) {}
 
   getAllProducts(): void {
+    this._loading.next(true);
     this.http.get<any[]>(this.baseUrl).subscribe((data) => {
       this.productsSubject.next(data);
+      this._loading.next(false);
     });
   }
 
@@ -39,6 +43,7 @@ export class ProductService {
       product.id === updatedProduct.id ? updatedProduct : product
     );
     this.productsSubject.next(updatedList);
+    this.updateproduct(updatedProduct.id, updatedProduct);
   }
 
   deleteProduct(id: number) {
@@ -48,5 +53,6 @@ export class ProductService {
   removeProductFromList(id: number) {
     const updatedList = this.productsSubject.value.filter((p) => p.id !== id);
     this.productsSubject.next(updatedList);
+    this.deleteProduct(id);
   }
 }

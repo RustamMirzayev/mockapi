@@ -1,6 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { ProductService } from './product.service';
-import { AsyncPipe, NgFor } from '@angular/common';
+import { AsyncPipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
@@ -10,13 +10,13 @@ import { AvatarModule } from 'primeng/avatar';
 @Component({
   selector: 'app-products',
   imports: [
-    NgFor,
     FormsModule,
     RouterLink,
     AsyncPipe,
     ButtonModule,
     ToolbarModule,
-    AvatarModule
+    AvatarModule,
+    NgClass,
   ],
   templateUrl: './products.component.html',
   styleUrl: './products.component.scss',
@@ -25,10 +25,13 @@ export class ProductsComponent implements OnInit {
   showEditModal: boolean = false;
   viewModal: boolean = false;
   editableProduct: any = {};
+  isSticky = false;
+  items: any;
+
   private productservice: ProductService = inject(ProductService);
 
   products$ = this.productservice.products$;
-  items: any;
+  loading$ = this.productservice.loading$;
 
   ngOnInit() {
     this.productservice.getAllProducts();
@@ -60,5 +63,10 @@ export class ProductsComponent implements OnInit {
     this.productservice.deleteProduct(productId).subscribe(() => {
       this.productservice.removeProductFromList(productId);
     });
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    this.isSticky = window.scrollY > 200;
   }
 }
